@@ -16,14 +16,26 @@ export default function CellMatrixPage() {
   // Generate initial cell data
   const initialCells: CellData[] = Array.from({ length: 80 }, (_, i) => {
     const id = i + 1
-    const isWarning = id === 36 || id === 57 || id === 22
+    
+    // Set up specific cells near the warning thresholds to demonstrate drifting
+    let voltage = 3.78
+    let temp = 28
+    let soc = 50
+    
+    if (id === 22) { temp = 38 } // Near overheat
+    if (id === 36) { voltage = 4.10 } // Near overvoltage
+    if (id === 57) { soc = 12 } // Near low SOC
+    if (id === 45) { soc = 96 } // Near high SOC
+
+    const isWarning = voltage > 4.15 || temp >= 40 || soc < 10 || soc > 98
+
     return {
       id,
-      voltage: isWarning ? '3.65V' : '3.78V',
+      voltage: voltage.toFixed(2) + 'V',
       isWarning,
-      soc: isWarning ? '78%' : '95%',
-      soh: isWarning ? '89%' : '98%',
-      temp: isWarning ? '42°C' : '28°C',
+      soc: soc + '%',
+      soh: '98%',
+      temp: temp + '°C',
     }
   })
 
@@ -42,26 +54,30 @@ export default function CellMatrixPage() {
 
         // For "bad" cells, introduce a steady drift towards abnormal values
         if (cell.id === 22) {
-          // Cell 22: Voltage dropping slowly, mimicking a weak cell
-          newVoltage = Math.max(3.2, currentVoltage - (Math.random() * 0.02))
+          // Cell 22: Temperature rising slowly, mimicking poor cooling
+          newTemp = Math.min(55, currentTemp + (Math.random() > 0.5 ? 1 : 0))
         } else if (cell.id === 36) {
-          // Cell 36: Temperature rising slowly, mimicking poor cooling
-          newTemp = Math.min(55, currentTemp + Math.floor(Math.random() * 2))
-        } else if (cell.id === 57) {
-          // Cell 57: Voltage spiking and temp rising
+          // Cell 36: Voltage rising slowly, mimicking overcharging
           newVoltage = Math.min(4.3, currentVoltage + (Math.random() * 0.02))
-          newTemp = Math.min(45, currentTemp + Math.floor(Math.random() * 2))
+        } else if (cell.id === 57) {
+          // Cell 57: SOC dropping unusually fast
+          newSoc = Math.max(0, currentSoc - 1)
+        } else if (cell.id === 45) {
+          // Cell 45: SOC rising too high
+          newSoc = Math.min(100, currentSoc + 1)
         } else {
           // Normal cells: Small random fluctuations around a stable baseline
           if (Math.random() > 0.5) {
             newVoltage = 3.78 + (Math.random() * 0.04 - 0.02)
             newTemp = 28 + Math.floor(Math.random() * 3 - 1)
+            // Normal SOC slightly fluctuating or dropping
+            if (Math.random() > 0.8) newSoc = Math.max(0, currentSoc - 1)
           }
         }
 
         // isWarning is strictly calculated based on physical threshold logic
-        // Voltage < 3.5V or > 4.1V, Temp >= 40°C, SOC < 20%
-        const isWarning = newVoltage < 3.5 || newVoltage > 4.1 || newTemp >= 40 || newSoc < 20
+        // Voltage > 4.15V, Temp >= 40°C, SOC < 10% or SOC > 98%
+        const isWarning = newVoltage > 4.15 || newTemp >= 40 || newSoc < 10 || newSoc > 98
 
         return {
           ...cell,
