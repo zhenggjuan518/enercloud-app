@@ -138,7 +138,7 @@ export default function CellMatrixPage() {
                   #{cell.id}
                 </span>
                 <span className={`text-[8px] leading-none mt-0.5 ${cell.isWarning ? 'text-on-error-container/80' : 'text-on-primary-container/80'}`}>
-                  {cell.voltage}
+                  {activeTab === 'voltage' ? cell.voltage : activeTab === 'temperature' ? cell.temp : cell.soc}
                 </span>
 
                 {/* Details Popover */}
