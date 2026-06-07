@@ -32,33 +32,42 @@ export default function CellMatrixPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCells(prevCells => prevCells.map(cell => {
-        // Only fluctuate some cells to make it look realistic
-        if (Math.random() > 0.3) return cell
-
         const currentVoltage = parseFloat(cell.voltage)
         const currentTemp = parseInt(cell.temp || '28')
+        const currentSoc = parseInt(cell.soc || '95')
         
-        // Fluctuate voltage by +/- 0.01V
-        let newVoltage = currentVoltage + (Math.random() > 0.5 ? 0.01 : -0.01)
-        // Fluctuate temp by +/- 1C
-        let newTemp = currentTemp + (Math.random() > 0.5 ? 1 : -1)
+        let newVoltage = currentVoltage
+        let newTemp = currentTemp
+        let newSoc = currentSoc
 
-        // Randomly fix or create warnings (rare)
-        let isWarning = cell.isWarning
-        if (isWarning && Math.random() > 0.95) {
-          isWarning = false
-          newVoltage = 3.78
-          newTemp = 28
-        } else if (!isWarning && Math.random() > 0.99) {
-          isWarning = true
-          newVoltage = 3.65
-          newTemp = 42
+        // For "bad" cells, introduce a steady drift towards abnormal values
+        if (cell.id === 22) {
+          // Cell 22: Voltage dropping slowly, mimicking a weak cell
+          newVoltage = Math.max(3.2, currentVoltage - (Math.random() * 0.02))
+        } else if (cell.id === 36) {
+          // Cell 36: Temperature rising slowly, mimicking poor cooling
+          newTemp = Math.min(55, currentTemp + Math.floor(Math.random() * 2))
+        } else if (cell.id === 57) {
+          // Cell 57: Voltage spiking and temp rising
+          newVoltage = Math.min(4.3, currentVoltage + (Math.random() * 0.02))
+          newTemp = Math.min(45, currentTemp + Math.floor(Math.random() * 2))
+        } else {
+          // Normal cells: Small random fluctuations around a stable baseline
+          if (Math.random() > 0.5) {
+            newVoltage = 3.78 + (Math.random() * 0.04 - 0.02)
+            newTemp = 28 + Math.floor(Math.random() * 3 - 1)
+          }
         }
+
+        // isWarning is strictly calculated based on physical threshold logic
+        // Voltage < 3.5V or > 4.1V, Temp >= 40°C, SOC < 20%
+        const isWarning = newVoltage < 3.5 || newVoltage > 4.1 || newTemp >= 40 || newSoc < 20
 
         return {
           ...cell,
           voltage: newVoltage.toFixed(2) + 'V',
           temp: newTemp + '°C',
+          soc: newSoc + '%',
           isWarning
         }
       }))
