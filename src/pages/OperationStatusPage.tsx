@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function OperationStatusPage() {
+  const navigate = useNavigate()
+
   const initialHeatmapData = [
     [
       { id: 'A1', temp: 28, level: 'normal' },
@@ -162,6 +165,13 @@ export default function OperationStatusPage() {
             ))}
           </div>
         </div>
+        <button 
+          onClick={() => navigate('/cell-matrix')}
+          className="w-full mt-4 py-3 border border-primary text-primary rounded-full hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
+        >
+          <span className="material-symbols-outlined text-[18px]">grid_view</span>
+          View Cell Matrix Details
+        </button>
       </div>
     </div>
   )

@@ -30,6 +30,8 @@ export default function ReportCenterPage() {
           </div>
           <input
             type="text"
+            id="search-reports"
+            name="search-reports"
             placeholder="Search reports..."
             className="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded-full leading-5 bg-surface-container-lowest placeholder-outline focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm transition-colors duration-200 shadow-sm"
           />
