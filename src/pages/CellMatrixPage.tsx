@@ -22,10 +22,15 @@ export default function CellMatrixPage() {
     let temp = 28
     let soc = 50
     
-    if (id === 22) { temp = 38 } // Near overheat
-    if (id === 36) { voltage = 4.10 } // Near overvoltage
-    if (id === 57) { soc = 12 } // Near low SOC
-    if (id === 45) { soc = 96 } // Near high SOC
+    // 3 Voltage anomalies (drifting up)
+    if ([10, 36, 62].includes(id)) { voltage = 4.10 }
+    
+    // 3 Temp anomalies (drifting up)
+    if ([5, 22, 73].includes(id)) { temp = 38 }
+    
+    // 3 SOC anomalies (2 low, 1 high)
+    if ([14, 57].includes(id)) { soc = 12 }
+    if (id === 45) { soc = 96 }
 
     const isWarning = voltage > 4.15 || temp >= 40 || soc < 10 || soc > 98
 
@@ -53,17 +58,17 @@ export default function CellMatrixPage() {
         let newSoc = currentSoc
 
         // For "bad" cells, introduce a steady drift towards abnormal values
-        if (cell.id === 22) {
-          // Cell 22: Temperature rising slowly, mimicking poor cooling
+        if ([5, 22, 73].includes(cell.id)) {
+          // Temperature rising slowly, mimicking poor cooling
           newTemp = Math.min(55, currentTemp + (Math.random() > 0.5 ? 1 : 0))
-        } else if (cell.id === 36) {
-          // Cell 36: Voltage rising slowly, mimicking overcharging
+        } else if ([10, 36, 62].includes(cell.id)) {
+          // Voltage rising slowly, mimicking overcharging
           newVoltage = Math.min(4.3, currentVoltage + (Math.random() * 0.02))
-        } else if (cell.id === 57) {
-          // Cell 57: SOC dropping unusually fast
+        } else if ([14, 57].includes(cell.id)) {
+          // SOC dropping unusually fast
           newSoc = Math.max(0, currentSoc - 1)
         } else if (cell.id === 45) {
-          // Cell 45: SOC rising too high
+          // SOC rising too high
           newSoc = Math.min(100, currentSoc + 1)
         } else {
           // Normal cells: Small random fluctuations around a stable baseline
