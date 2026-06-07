@@ -146,23 +146,37 @@ export default function CellMatrixPage() {
         />
         <div className="custom-scrollbar overflow-x-auto overflow-y-auto max-h-[420px] bg-surface rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-3 border border-surface-variant relative z-10">
           <div className="grid grid-cols-8 gap-1 min-w-[300px]">
-            {cells.map((cell) => (
+            {cells.map((cell) => {
+              const v = parseFloat(cell.voltage);
+              const t = parseInt(cell.temp || '28');
+              const s = parseInt(cell.soc || '50');
+              
+              const isVoltageWarning = v > 4.15;
+              const isTempWarning = t >= 40;
+              const isSocWarning = s < 10 || s > 98;
+
+              let isWarningForTab = false;
+              if (activeTab === 'voltage') isWarningForTab = isVoltageWarning;
+              else if (activeTab === 'temperature') isWarningForTab = isTempWarning;
+              else if (activeTab === 'soc') isWarningForTab = isSocWarning;
+
+              return (
               <div
                 key={cell.id}
                 onClick={() => setSelectedCell(selectedCell?.id === cell.id ? null : cell)}
                 className={`aspect-square rounded-sm flex flex-col items-center justify-center border shadow-sm transition-transform hover:scale-105 cursor-pointer relative
-                  ${cell.isWarning
+                  ${isWarningForTab
                     ? 'bg-error-container border-error/30 ring-2 ring-error ring-offset-1 ring-offset-surface'
                     : 'bg-primary-container border-primary/20'
                   }`}
               >
-                {cell.isWarning && (
+                {isWarningForTab && (
                   <span className="material-symbols-outlined text-on-error-container absolute -top-1 opacity-40 text-[14px] icon-fill">warning</span>
                 )}
-                <span className={`text-[9px] font-semibold leading-none ${cell.isWarning ? 'text-on-error-container' : 'text-on-primary-container'}`}>
+                <span className={`text-[9px] font-semibold leading-none ${isWarningForTab ? 'text-on-error-container' : 'text-on-primary-container'}`}>
                   #{cell.id}
                 </span>
-                <span className={`text-[8px] leading-none mt-0.5 ${cell.isWarning ? 'text-on-error-container/80' : 'text-on-primary-container/80'}`}>
+                <span className={`text-[8px] leading-none mt-0.5 ${isWarningForTab ? 'text-on-error-container/80' : 'text-on-primary-container/80'}`}>
                   {activeTab === 'voltage' ? cell.voltage : activeTab === 'temperature' ? cell.temp : cell.soc}
                 </span>
 
@@ -183,16 +197,16 @@ export default function CellMatrixPage() {
                     </div>
                     <div className="flex flex-col gap-1">
                       <div className="flex justify-between text-[11px] text-on-surface-variant">
-                        <span>SOC:</span> <span className="font-medium text-on-surface">{cell.soc}</span>
+                        <span>SOC:</span> <span className={`font-medium ${isSocWarning ? 'text-error' : 'text-on-surface'}`}>{cell.soc}</span>
                       </div>
                       <div className="flex justify-between text-[11px] text-on-surface-variant">
                         <span>SOH:</span> <span className="font-medium text-on-surface">{cell.soh}</span>
                       </div>
                       <div className="flex justify-between text-[11px] text-on-surface-variant">
-                        <span>Temp:</span> <span className={`font-medium ${cell.isWarning ? 'text-error' : 'text-on-surface'}`}>{cell.temp}</span>
+                        <span>Temp:</span> <span className={`font-medium ${isTempWarning ? 'text-error' : 'text-on-surface'}`}>{cell.temp}</span>
                       </div>
                       <div className="flex justify-between text-[11px] text-on-surface-variant">
-                        <span>Voltage:</span> <span className="font-medium text-on-surface">{cell.voltage}</span>
+                        <span>Voltage:</span> <span className={`font-medium ${isVoltageWarning ? 'text-error' : 'text-on-surface'}`}>{cell.voltage}</span>
                       </div>
                     </div>
                     <button className="mt-1 w-full py-1.5 bg-surface-variant text-on-surface rounded-md hover:bg-surface-container-high transition-colors text-[11px] font-semibold">
@@ -201,7 +215,7 @@ export default function CellMatrixPage() {
                   </div>
                 )}
               </div>
-            ))}
+            )})}
           </div>
         </div>
 
