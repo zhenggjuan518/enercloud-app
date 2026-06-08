@@ -1,0 +1,60 @@
+{
+  "started_at": "2026-06-08T23:33:50",
+  "finished_at": "2026-06-08T23:34:01",
+  "base_url": "http://127.0.0.1:5173",
+  "results": [
+    {
+      "name": "Open login page",
+      "passed": true,
+      "details": "Current URL: http://127.0.0.1:5173/login"
+    },
+    {
+      "name": "Login flow",
+      "passed": true,
+      "details": "Current URL: http://127.0.0.1:5173/overview"
+    },
+    {
+      "name": "Top nav hidden on mobile",
+      "passed": true,
+      "details": "header hidden: True"
+    },
+    {
+      "name": "No horizontal overflow on overview",
+      "passed": true,
+      "details": "viewport=390, body=390, doc=390"
+    },
+    {
+      "name": "Navigate to status page",
+      "passed": true,
+      "details": "Current URL: http://127.0.0.1:5173/status"
+    },
+    {
+      "name": "Navigate to cell matrix",
+      "passed": true,
+      "details": "Current URL: http://127.0.0.1:5173/cell-matrix"
+    },
+    {
+      "name": "Navigate to analysis page",
+      "passed": true,
+      "details": "Current URL: http://127.0.0.1:5173/analysis"
+    },
+    {
+      "name": "Navigate to reports page",
+      "passed": true,
+      "details": "Current URL: http://127.0.0.1:5173/reports"
+    },
+    {
+      "name": "Report filters rendered",
+      "passed": true,
+      "details": "All filter matches: 1"
+    }
+  ],
+  "screenshots": [
+    "docs/qa/artifacts/mobile-login.png",
+    "docs/qa/artifacts/mobile-overview.png",
+    "docs/qa/artifacts/mobile-status.png",
+    "docs/qa/artifacts/mobile-cell-matrix.png",
+    "docs/qa/artifacts/mobile-analysis.png",
+    "docs/qa/artifacts/mobile-reports.png"
+  ]
+}
