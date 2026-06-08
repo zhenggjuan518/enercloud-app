@@ -1,0 +1,26 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2 via SSH Action
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/enercloud-app
+            git pull
+            npm install
+            npm run build
+            sudo cp -r dist/* /var/www/html/
+            sudo systemctl restart nginx
