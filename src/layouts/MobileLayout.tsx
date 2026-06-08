@@ -27,9 +27,11 @@ export default function MobileLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface pb-24">
-      <TopAppBar title={getTitle()} />
-      <main className="max-w-[480px] mx-auto px-container-margin pt-4">
+    <div className="min-h-screen w-full overflow-x-hidden bg-background text-on-surface pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))]">
+      <div className="hidden md:block">
+        <TopAppBar title={getTitle()} />
+      </div>
+      <main className="w-full px-container-margin pt-4 md:mx-auto md:max-w-[480px] md:pt-4">
         <Outlet />
       </main>
       <BottomNavBar activeTab={getActiveTab()} />

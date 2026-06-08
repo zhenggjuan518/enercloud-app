@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+// Demo account — pre-filled below so the platform can be tried without a backend.
+const DEMO_USERNAME = 'admin'
+const DEMO_PASSWORD = '123456'
+
 export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -9,13 +13,19 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    const username = formData.get('username')
-    const password = formData.get('password')
+    const username = String(formData.get('username') ?? '').trim()
+    const password = String(formData.get('password') ?? '')
 
-    if (username && password) {
+    if (!username || !password) {
+      setErrorMsg('Please enter both username and password')
+      return
+    }
+
+    if (username === DEMO_USERNAME && password === DEMO_PASSWORD) {
+      setErrorMsg('')
       navigate('/overview')
     } else {
-      setErrorMsg('Please enter both username and password')
+      setErrorMsg('Invalid username or password')
     }
   }
 
@@ -62,7 +72,7 @@ export default function LoginPage() {
                 type="text"
                 id="username"
                 name="username"
-                defaultValue="admin"
+                defaultValue={DEMO_USERNAME}
                 placeholder="Username"
                 required
                 className="block w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all duration-200 shadow-sm text-body-lg"
@@ -78,7 +88,7 @@ export default function LoginPage() {
                 type="password"
                 id="password"
                 name="password"
-                defaultValue="admin"
+                defaultValue={DEMO_PASSWORD}
                 placeholder="Password"
                 required
                 className="block w-full pl-11 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all duration-200 shadow-sm text-body-lg"
@@ -122,8 +132,15 @@ export default function LoginPage() {
             </button>
           </form>
 
+          {/* Demo Account Hint */}
+          <div className="mt-4 text-center">
+            <p className="text-label-md text-on-surface-variant/70">
+              Demo · {DEMO_USERNAME} / {DEMO_PASSWORD}
+            </p>
+          </div>
+
           {/* Sign Up Link */}
-          <div className="mt-6 text-center">
+          <div className="mt-4 text-center">
             <p className="text-body-sm text-on-surface-variant">
               Don't have an account?{' '}
               <a href="#" className="text-primary font-semibold hover:underline transition-all">Sign Up</a>

@@ -90,10 +90,19 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
+  margin: 0;
   font-family: var(--font-body);
   background-color: var(--color-background);
   color: var(--color-on-surface);
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

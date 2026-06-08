@@ -15,8 +15,8 @@ export default function BottomNavBar({ activeTab }: BottomNavBarProps) {
   const navigate = useNavigate()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface shadow-[0_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
-      <div className="flex justify-around items-center px-4 py-2 border-t border-outline-variant/20 max-w-[480px] mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface/95 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] backdrop-blur-md">
+      <div className="flex justify-around items-center border-t border-outline-variant/20 px-4 py-2 md:mx-auto md:max-w-[480px]">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id
           return (
@@ -40,7 +40,7 @@ export default function BottomNavBar({ activeTab }: BottomNavBarProps) {
         })}
       </div>
       {/* iOS Home Indicator Space */}
-      <div className="h-5 w-full flex justify-center pb-2 bg-surface">
+      <div className="flex h-[calc(1.25rem+env(safe-area-inset-bottom,0px))] w-full justify-center bg-surface/95 pb-2">
         <div className="w-1/3 h-1 bg-outline rounded-full opacity-30" />
       </div>
     </nav>
